@@ -29,7 +29,10 @@ const Container = styled.div`
   height: 100vh;
   background-color: whitesmoke;
 `;
-const Logo = styled.img``;
+const Logo = styled.img`
+  position: relative;
+  margin-bottom: 30px;
+`;
 const LoginContainer = styled.div`
   padding: 100px;
   display: flex;
