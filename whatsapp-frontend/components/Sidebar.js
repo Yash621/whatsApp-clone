@@ -38,7 +38,7 @@ function Sidebar() {
   };
   // understand
   const chatAreadyExists = (recieptEmail) => {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            turn !!chatSnapshot?.docs.find((chat) => {
+    !!chatSnapshot?.docs.find((chat) => {
       chat.data().users.find((user) => user === recieptEmail)?.length > 0;
     });
   };
@@ -47,7 +47,7 @@ function Sidebar() {
     <Container>
       <Header>
         <IconButton>
-          <UserAvatar onClick={() => auth.signOut()} />
+          <UserAvatar src={user.photoURL} onClick={() => auth.signOut()} />
         </IconButton>
         <IconsContainer>
           <IconButton>
@@ -65,7 +65,7 @@ function Sidebar() {
       </Search>
       <SidebarButton onClick={createChat}>Start a new chat</SidebarButton>
       {chatSnapshot?.docs.map((chat) => (
-        <Chat key={chat.id} user={chat.data().users} />
+        <Chat key={chat.id} users={chat.data().users} />
       ))}
     </Container>
   );
@@ -73,7 +73,19 @@ function Sidebar() {
 
 export default Sidebar;
 
-const Container = styled.div``;
+const Container = styled.div`
+  flex: 0.45;
+  border-right: 1px solid whitesmoke;
+  height: 100vh;
+  min-width: 250px;
+  max-width: 300px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  ::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+`;
 
 const Search = styled.div`
   display: flex;
