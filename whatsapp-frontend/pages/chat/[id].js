@@ -38,7 +38,7 @@ export async function getServerSideProps(context) {
     }))
     .map((messages) => ({
       ...messages,
-      timestamp: messages.timestamp.toDate().getTime(),
+      timestamp: messages.data().timestamp.toDate().getTime(),
     }));
 
   const chatRes = await ref.get();

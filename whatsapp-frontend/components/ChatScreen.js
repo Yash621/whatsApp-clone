@@ -10,17 +10,50 @@ import { IconButton } from "@material-ui/core";
 import { useCollection } from "react-firebase-hooks/firestore";
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import MicIcon from "@material-ui/icons/Mic";
+import { useState } from "react";
+import firebase from "firebase";
+import Message from "./Message";
+import getRecipientEmail from "../utils/getReciepientEmail";
 
 function ChatScreen({ chat, messages }) {
   const [user] = useAuthState(auth);
+  const [input, setInput] = useState("");
   const router = useRouter();
+
   const [messagesSnapshot] = useCollection(
     db
       .collection("chats")
       .doc(router.query.id)
-      .collection("messages")
+      .collection("message")
       .orderBy("timestamp", "asc")
   );
+
+  const [recipientSnapshot] = useCollection(
+    db
+      .collection("users")
+      .where("email", "==", getRecipientEmail(chat.users, user))
+  );
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+    // updating the last seen
+    db.collection("users").doc(user.uid).set(
+      {
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+    db.collection("chats").doc(router.query.id).collection("message").add({
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      message: input,
+      user: user.email,
+      photoURL: user.photoURL,
+    });
+
+    setInput("");
+  };
+
+  const recipientEmail = getRecipientEmail(chat.users, user);
 
   const showMessage = () => {
     if (messagesSnapshot) {
@@ -30,9 +63,13 @@ function ChatScreen({ chat, messages }) {
           user={message.data().user}
           message={{
             ...message.data(),
-            timestamp: message.data().toDate().getTime(),
+            timestamp: message.data().timestamp.toDate().getTime(),
           }}
         />
+      ));
+    } else {
+      return JSON.parse(messages).map((message) => (
+        <Message key={message.id} user={message.user} message={message} />
       ));
     }
   };
@@ -42,7 +79,7 @@ function ChatScreen({ chat, messages }) {
       <Header>
         <Avatar />
         <HeaderInformation>
-          <h3>Rec Email</h3>
+          <h3>{recipientEmail}</h3>
           <p>Last seen ...</p>
         </HeaderInformation>
         <HeaderIcon>
@@ -60,7 +97,10 @@ function ChatScreen({ chat, messages }) {
       </MessageContainer>
       <InputContainer>
         <InsertEmoticonIcon />
-        <Input />
+        <Input value={input} onChange={(e) => setInput(e.target.value)} />
+        <button hidden disabled={!input} type="submit" onClick={sendMessage}>
+          Send
+        </button>
         <MicIcon />
       </InputContainer>
     </Container>

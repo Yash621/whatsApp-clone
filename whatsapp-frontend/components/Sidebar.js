@@ -65,7 +65,7 @@ function Sidebar() {
       </Search>
       <SidebarButton onClick={createChat}>Start a new chat</SidebarButton>
       {chatSnapshot?.docs.map((chat) => (
-        <Chat key={chat.id} users={chat.data().users} />
+        <Chat id={chat.id} users={chat.data().users} />
       ))}
     </Container>
   );
