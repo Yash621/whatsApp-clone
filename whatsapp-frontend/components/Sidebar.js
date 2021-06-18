@@ -58,7 +58,6 @@ function Sidebar() {
           </IconButton>
         </IconsContainer>
       </Header>
-
       <Search>
         <SearchIcon />
         <SearchInput placeholder="Search in chats" />
