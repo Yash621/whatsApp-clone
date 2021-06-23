@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 function Chat({ id, users }) {
   const router = useRouter();
   const user = useAuthState(auth);
+
   const [recipientSnapshot] = useCollection(
     db.collection("users").where("email", "==", getReciepientEmail(users, user))
   );
@@ -22,7 +23,6 @@ function Chat({ id, users }) {
   return (
     <Container onClick={enterChat}>
       {/* {recipient ? (<UserAvatar src={recipient?.photoUrl}>):(<UserAvatar>{reciepientEmail[0]}</UserAvatar>)} */}
-
       {recipient ? (
         <UserAvatar src={recipient?.photoUrl} />
       ) : (

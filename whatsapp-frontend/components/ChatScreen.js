@@ -63,11 +63,8 @@ function ChatScreen({ chat, messages }) {
   };
 
   const recipientEmail = getRecipientEmail(chat.users, user);
-  const recipient = () => {
-    // if (recipientSnapshot?.docs?.[0].data()) {
-    return recipientSnapshot?.docs?.[0].data();
-    // }
-  };
+  const recipient = () => recipientSnapshot?.docs?.[0].data();
+
   const showMessage = () => {
     if (messagesSnapshot) {
       return messagesSnapshot.docs.map((message) => (
